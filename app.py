@@ -2,19 +2,18 @@ import streamlit as st
 import pickle
 import matplotlib.pyplot as plt
 
-# ------------------ Data Mappings ------------------
+ 
 d1 = {'Comprehensive': 0,'Zero Dep': 1,'Third Party': 3,'Third Party insurance': 2,'Not Available': 4}
 d2 = {'First Owner': 1,'Second Owner': 2,'Third Owner': 3,'Fourth Owner': 4, 'Fifth Owner': 5}
 d3 = {'Petrol': 0,'Diesel': 1,'CNG': 2}
 d4 = {'Manual': 0,'Automatic': 1}
 
-# ------------------ Load Model ------------------
+ 
 final_model = pickle.load(open('Final_model.pkl', 'rb'))
 
-# ------------------ Page Config ------------------
 st.set_page_config(page_title="Car Price Predictor", layout="centered")
 
-# ------------------ Dark Theme ------------------
+
 st.markdown("""
 <style>
 .stApp {
@@ -46,11 +45,10 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ------------------ TITLE ------------------
+
 st.title(" Car Price Predictor")
 st.markdown("### Predict your car price")
 
-# ------------------ INPUT FORM ------------------
 insurance_validity = st.selectbox("Insurance Validity", list(d1.keys()))
 ownership = st.selectbox("Ownership", list(d2.keys()))
 fuel_type = st.selectbox("Fuel Type", list(d3.keys()))
@@ -59,7 +57,6 @@ kms_driven = st.slider("Kms Driven", 0, 200000, 50000)
 
 predict_btn = st.button("Predict Price")
 
-# ------------------ OUTPUT (BOTTOM CENTER) ------------------
 if predict_btn:
     try:
         iv = d1[insurance_validity]
@@ -70,7 +67,7 @@ if predict_btn:
         test = [[iv, own, fuel, kms_driven, trans]]
         yp = int(final_model.predict(test)[0])
 
-        # ---- RESULT BOX ----
+ 
         st.markdown(f"""
         <div class="result-box">
             <h2>💰 Estimated Price</h2>
@@ -78,11 +75,12 @@ if predict_btn:
         </div>
         """, unsafe_allow_html=True)
 
-        # ---- SMALL HISTOGRAM ----
+ 
         factors = ['Ins', 'Own', 'Fuel', 'Kms', 'Trans']
         values = [iv, own, fuel, kms_driven/10000, trans]
 
-        fig, ax = plt.subplots(figsize=(4,2))  # 👈 small size
+     ## pie plot    
+        fig, ax = plt.subplots(figsize=(4,2))   
         ax.bar(factors, values)
         ax.set_title("Impact", fontsize=10)
 
